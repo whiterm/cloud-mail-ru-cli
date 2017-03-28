@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gosuri/uiprogress"
-	"github.com/sergevs/GoMailRuCloud/Api"
+	"./Api"
 	"log"
 	"os"
 	"path"
@@ -13,8 +13,11 @@ import (
 func progress(c <-chan int) {
 	uiprogress.Start()
 	b := uiprogress.AddBar(<-c)
+	b.PrependElapsed().AppendCompleted()
+
 	for i := range c {
 		b.Set(i)
+		//fmt.Fprintf(os.Stdin, "velocity download: %d", i)
 	}
 	uiprogress.Stop()
 }
