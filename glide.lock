@@ -1,0 +1,16 @@
+hash: a433b7da44e861940be33464d1717bc5c2d342b47ec12d871cb305185e3c5d64
+updated: 2017-03-31T02:43:37.6385288+03:00
+imports:
+- name: github.com/gosuri/uilive
+  version: ac356e6e42cd31fcef8e6aec13ae9ed6fe87713e
+- name: github.com/gosuri/uiprogress
+  version: d0567a9d84a1c40dd7568115ea66f4887bf57b33
+  subpackages:
+  - util/strutil
+- name: github.com/mattn/go-isatty
+  version: fc9e8d8ef48496124e79ae0df75490096eccf6fe
+- name: golang.org/x/sys
+  version: 9a7256cb28ed514b4e1e5f68959914c4c28a92e0
+  subpackages:
+  - unix
+testImports: []

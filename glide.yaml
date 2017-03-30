@@ -1,0 +1,3 @@
+package: github.com/PhantomXCool/cloud-mail-ru-cli
+import:
+- package: github.com/gosuri/uiprogress

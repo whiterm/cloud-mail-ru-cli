@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gosuri/uiprogress"
-	"./Api"
+	"github.com/PhantomXCool/cloud-mail-ru-cli/Api"
 	"log"
 	"os"
 	"path"
