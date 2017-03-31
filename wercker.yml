@@ -18,10 +18,10 @@ build:
         code: |
           cd /go/src/github.com/PhantomXCool/cloud-mail-ru-cli &&
           CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o cloud-cli
-#    - script:
-#        name: go test
-#        code: |
-#          go test ./...
+    - script:
+        name: go test
+        code: |
+          go test github.com/PhantomXCool/cloud-mail-ru-cli/Api
     - script:
         name: copy binary
         code: cp /go/src/github.com/PhantomXCool/cloud-mail-ru-cli/cloud-cli "$WERCKER_OUTPUT_DIR"
