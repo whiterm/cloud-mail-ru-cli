@@ -17,7 +17,7 @@ build:
         name: go build
         code: |
           cd /go/src/github.com/PhantomXCool/cloud-mail-ru-cli &&
-          go build -o cloud-cli
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o cloud-cli
 #    - script:
 #        name: go test
 #        code: |
@@ -30,7 +30,7 @@ deploy:
     - internal/docker-scratch-push:
           username: $USERNAME
           password: $PASSWORD
-          cmd: ./cloud-cli
-          tag: $WERCKER_GIT_COMMIT
+          entrypoint: ./cloud-cli
+          tag: latest
           repository: phantomx/cloud-cli
 #          registry: https://registry.hub.docker.com
