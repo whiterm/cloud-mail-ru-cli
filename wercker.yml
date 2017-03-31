@@ -34,4 +34,4 @@ deploy:
           entrypoint: ./cloud-cli
           tag: latest
           repository: phantomx/cloud-cli
-#          registry: https://registry.hub.docker.com
+          registry: https://registry.hub.docker.com
