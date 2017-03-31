@@ -22,6 +22,7 @@ build:
         name: go test
         code: |
           go test github.com/PhantomXCool/cloud-mail-ru-cli/Api
+
     - script:
         name: copy binary
         code: cp /go/src/github.com/PhantomXCool/cloud-mail-ru-cli/cloud-cli "$WERCKER_OUTPUT_DIR"
@@ -33,4 +34,4 @@ deploy:
           entrypoint: ./cloud-cli
           tag: latest
           repository: phantomx/cloud-cli
-#          registry: https://registry.hub.docker.com
+          registry: https://registry.hub.docker.com
