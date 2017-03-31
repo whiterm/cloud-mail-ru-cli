@@ -11,12 +11,12 @@ build:
     - script:
         name: copy source
         code: |
-          mkdir -p /go/src/github.com/PhantomXCool/cloud-mail-ru-cli
+          mkdir -p /go/src/github.com/PhantomXCool/cloud-mail-ru-cli &&
           cp -r ./ /go/src/github.com/PhantomXCool/cloud-mail-ru-cli
-          cd /go/src/github.com/PhantomXCool/cloud-mail-ru-cli
     - script:
         name: go build
         code: |
+          cd /go/src/github.com/PhantomXCool/cloud-mail-ru-cli &&
           go build -o cloud-cli
 #    - script:
 #        name: go test
@@ -24,7 +24,7 @@ build:
 #          go test ./...
     - script:
         name: copy binary
-        code: cp cloud-cli "$WERCKER_OUTPUT_DIR"
+        code: cp /go/src/github.com/PhantomXCool/cloud-mail-ru-cli/cloud-cli "$WERCKER_OUTPUT_DIR"
 deploy:
   steps:
     - internal/docker-scratch-push:
