@@ -1,0 +1,36 @@
+box: golang
+dev:
+  steps:
+    - internal/watch:
+        code: |
+          go build ./...
+          ./source
+        reload: true
+build:
+  steps:
+    - script:
+        name: copy source
+        code: |
+          mkdir -p /go/src/github.com/PhantomXCool/cloud-mail-ru-cli
+          cp -r ./ /go/src/github.com/PhantomXCool/cloud-mail-ru-cli
+          cd /go/src/github.com/PhantomXCool/cloud-mail-ru-cli
+    - script:
+        name: go build
+        code: |
+          go build -o cloud-cli
+#    - script:
+#        name: go test
+#        code: |
+#          go test ./...
+    - script:
+        name: copy binary
+        code: cp cloud-cli "$WERCKER_OUTPUT_DIR"
+deploy:
+  steps:
+    - internal/docker-scratch-push:
+          username: $USERNAME
+          password: $PASSWORD
+          cmd: ./cloud-cli
+          tag: $WERCKER_GIT_COMMIT
+          repository: phantomx/cloud-cli
+#          registry: https://registry.hub.docker.com
