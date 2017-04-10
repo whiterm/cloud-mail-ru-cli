@@ -27,7 +27,7 @@ func usage() {
 	fmt.Fprintf(os.Stderr, "Usage: %s -<COMMAND> [FILE/DIR] [FILE/DIR]\n", filepath.Base(os.Args[0]))
 	fmt.Fprintf(os.Stderr, "Provides basic operates with files at mail.ru cloud storage\n\n")
 	fmt.Fprintf(os.Stderr, "COMMAND := < cp | cat | get | ls | mkdir | mv | put | rm | stat >\n\n")
-	fmt.Fprintf(os.Stderr, "Example: tmrc -ls\n")
+	fmt.Fprintf(os.Stderr, "Example: cmri -ls\n")
 	os.Exit(1)
 }
 
