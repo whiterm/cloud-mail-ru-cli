@@ -37,7 +37,17 @@ func main() {
 	}
 	//  Uncomment the next line to disable very useful default logger
 	//  mailrucloud.Logger = log.New(ioutil.Discard, "", log.Lshortfile)
-	c, err := mailrucloud.NewCloud(os.ExpandEnv("$MAILRU_USER"), os.ExpandEnv("$MAILRU_PASSWORD"), "mail.ru")
+	user := os.Getenv("MAILRU_USER")
+	if user == "" {
+		log.Fatal("MAILRU_USER is not defined")
+		os.Exit(1)
+	}
+	password := os.Getenv("MAILRU_PASSWORD")
+	if password == "" {
+		log.Fatal("MAILRU_PASSWORD is not defined")
+		os.Exit(1)
+	}
+	c, err := mailrucloud.NewCloud(user, password, "mail.ru")
 	if err != nil {
 		os.Exit(1)
 	}
