@@ -17,20 +17,20 @@ build:
         name: go build
         code: |
           cd /go/src/github.com/PhantomXCool/cloud-mail-ru-cli &&
-          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o cloud-cli
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o cmri
     - script:
         name: go test
         code: |
           go test github.com/PhantomXCool/cloud-mail-ru-cli/Api
     - script:
         name: copy binary
-        code: cp /go/src/github.com/PhantomXCool/cloud-mail-ru-cli/cloud-cli "$WERCKER_OUTPUT_DIR"
+        code: cp /go/src/github.com/PhantomXCool/cloud-mail-ru-cli/cmri "$WERCKER_OUTPUT_DIR"
 deploy:
   steps:
     - internal/docker-scratch-push:
           username: $USERNAME
           password: $PASSWORD
-          entrypoint: ./cloud-cli
+          entrypoint: ./cmri
           tag: latest
           repository: phantomx/cloud-cli
 #          registry: https://registry.hub.docker.com

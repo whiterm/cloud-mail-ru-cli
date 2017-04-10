@@ -1,4 +1,5 @@
-FROM scratch
+FROM ubuntu:16.04
 
-ADD ./cloud-cli /
-ENTRYPOINT ["/cloud-cli"]
+WORKDIR /opt/cloud_mail_ru
+ADD cmri ./
+CMD ["./cmri"]
