@@ -31,6 +31,7 @@ func (c *MailRuCloud) Get(src, dst string, ch chan<- int) (err error) {
 			Logger.Println(err)
 			return
 		}
+		defer f.Close()
 	}
 	_, err = io.Copy(f, NewIoProgress(r.Body, int(r.ContentLength), ch))
 	if err != nil {
