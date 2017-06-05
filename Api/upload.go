@@ -1,7 +1,6 @@
 package mailrucloud
 
 import (
-	"bytes"
 	"crypto/rand"
 	"fmt"
 	"io"
@@ -11,6 +10,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"log"
 )
 
 // mail.ru limits file size to 2GB
@@ -30,6 +30,7 @@ func (c *MailRuCloud) Upload(src, dst string, ch chan<- int) (err error) {
 	if err != nil {
 		return
 	}
+	defer f.Close()
 	s, err := f.Stat()
 	if err != nil {
 		return
@@ -44,28 +45,39 @@ func (c *MailRuCloud) Upload(src, dst string, ch chan<- int) (err error) {
 }
 
 func (c *MailRuCloud) UploadFilePart(file *os.File, src, dst string, start, end int64, ch chan<- int) (err error) {
-	var b bytes.Buffer
-	w := multipart.NewWriter(&b)
-	w.SetBoundary(randomBoundary())
-	fw, err := w.CreateFormFile("file", "filename")
-	if err != nil {
-		Logger.Println(err)
-		return
-	}
-	if _, err = io.Copy(fw, file); err != nil {
-		Logger.Println(err)
-		return
-	}
-	w.Close()
+	pipeReader, pipeWriter := io.Pipe()
+	writer := multipart.NewWriter(pipeWriter)
+	writer.SetBoundary(randomBoundary())
+	errChan := make(chan error, 1)
+	go func() {
+		defer pipeWriter.Close()
+		part, err := writer.CreateFormFile("file", "filename")
+		if err != nil {
+			errChan <- err
+			return
+		}
+		_, err = io.Copy(part, file)
+		if err == nil {
+			err = writer.Close()
+		}
+		errChan <- err
+	}()
 	Url := c.Shard.Upload
-	req, err := http.NewRequest("POST", Url, NewIoProgress(&b, b.Len(), ch))
+	stat, err := file.Stat()
+	if err != nil {
+		log.Panicf("Don't get file stat %v", file)
+	}
+	contentSize := stat.Size() + 180
+	req, err := http.NewRequest("POST", Url, NewIoProgress(pipeReader, int(contentSize), ch))
 	if err != nil {
 		Logger.Println(err)
 		return
 	}
-	req.ContentLength = int64(b.Len())
-	req.Header.Set("Content-Type", w.FormDataContentType())
+
+	req.ContentLength = contentSize
+	req.Header.Set("Content-Type", writer.FormDataContentType())
 	req.Header.Set("Accept-Encoding", "*.*")
+	req.Body = ioutil.NopCloser(pipeReader)
 
 	//	dump, _ := httputil.DumpRequestOut(req, true)
 	//	fmt.Printf("%q", dump)
@@ -75,6 +87,10 @@ func (c *MailRuCloud) UploadFilePart(file *os.File, src, dst string, start, end 
 		return
 	}
 	defer r.Body.Close()
+	// Handling the error the routine may caused
+	if err := <-errChan; err != nil {
+		panic(err)
+	}
 	// Check the response
 	br, err := ioutil.ReadAll(r.Body)
 	if err != nil {
