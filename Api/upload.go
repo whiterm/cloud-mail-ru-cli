@@ -77,7 +77,7 @@ func (c *MailRuCloud) UploadFilePart(file *os.File, src, dst string, start, end 
 	req.ContentLength = contentSize
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 	req.Header.Set("Accept-Encoding", "*.*")
-	req.Body = ioutil.NopCloser(pipeReader)
+	//req.Body = ioutil.NopCloser(pipeReader)
 
 	//	dump, _ := httputil.DumpRequestOut(req, true)
 	//	fmt.Printf("%q", dump)
