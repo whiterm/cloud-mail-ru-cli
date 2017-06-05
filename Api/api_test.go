@@ -8,6 +8,7 @@ import (
 	"os"
 	"testing"
 	"time"
+	"github.com/gosuri/uiprogress"
 )
 
 const okfmt = "\t%-15s \u2713"
@@ -15,6 +16,18 @@ const failmrk = "\u2717"
 const testdir = "/goapi_test/"
 const testfile = "the_file.xyz"
 const filesize = 1024 * 1024 * 10
+
+func progress(c <-chan int) {
+	uiprogress.Start()
+	b := uiprogress.AddBar(<-c)
+	b.PrependElapsed().AppendCompleted()
+
+	for i := range c {
+		b.Set(i)
+		//fmt.Fprintf(os.Stdin, "velocity download: %d", i)
+	}
+	uiprogress.Stop()
+}
 
 func TestApi(t *testing.T) {
 	var c *MailRuCloud
@@ -65,7 +78,9 @@ func TestApi(t *testing.T) {
 		md5orig = md5sum.Sum(nil)
 		t.Logf(okfmt+" (%x)", "Calc md5sum ", md5orig)
 	}
-	if err := c.Upload(testfile, testdir+testfile, nil); err != nil {
+	pc := make(chan int)
+	go progress(pc)
+	if err := c.Upload(testfile, testdir+testfile, pc); err != nil {
 		t.Fatal(err, failmrk)
 	}
 	t.Logf(okfmt, "Uploadfile")
